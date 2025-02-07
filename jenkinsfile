@@ -1,0 +1,12 @@
+pipeline{
+    agent any
+    stages{
+        stage('npm version check')
+        {
+            step{
+                sh 'node -v'
+                sh 'npm -v'
+            }
+        }
+    }
+}
