@@ -1,0 +1,99 @@
+Install Jenkins as a service
+
+sudo apt update
+sudo apt install -y openjdk-11-jdk
+
+Verify the installation:
+
+java -version
+
+Add Jenkins Repository & Install Jenkins
+Jenkins is not included in the default Ubuntu repositories, so you need to add its official repository.
+
+# Add Jenkins GPG key
+wget -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+# Add Jenkins repository
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# Update package lists
+sudo apt update
+
+# Install Jenkins
+sudo apt install -y Jenkins
+
+Start & Enable the Jenkins Service
+Once Jenkins is installed, start the service and enable it to run on boot.
+sudo systemctl start jenkins
+sudo systemctl enable Jenkins
+
+Open Firewall Ports (If UFW is Enabled)
+By default, Jenkins runs on port 8080. If you have a firewall enabled, allow traffic:
+
+sudo ufw allow 8080
+sudo ufw enable
+
+Check if the rule is added:
+sudo ufw status
+
+Access Jenkins Web Interface
+•	Open a browser and go to:
+http://<your-server-ip>:8080
+•	To get the initial admin password, run:
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+•	Copy the password and paste it into the Jenkins UI to complete the setup.
+
+Install nodejs plugin
+
+Install nodejs tools
+
+Install Gitea on Ubuntu (Systemd Service)
+Update and Install Dependencies
+sudo apt update
+sudo apt install -y git mariadb-server sqlite3
+Create a Gitea User
+sudo adduser --system --group --disabled-login --home /var/lib/gitea gitea
+Download Gitea Binary
+sudo mkdir -p /usr/local/bin
+curl -L -o gitea https://dl.gitea.io/gitea/latest/gitea-$(uname -m)
+sudo chmod +x gitea
+sudo mv gitea /usr/local/bin/
+Create Necessary Directories
+sudo mkdir -p /var/lib/gitea/{custom,data,log}
+sudo chown -R gitea:gitea /var/lib/gitea
+sudo chmod -R 750 /var/lib/gitea
+Create a Systemd Service for Gitea
+sudo tee /etc/systemd/system/gitea.service <<EOF
+[Unit]
+Description=Gitea Service
+After=network.target
+
+[Service]
+RestartSec=2s
+Type=simple
+User=gitea
+Group=gitea
+WorkingDirectory=/var/lib/gitea
+ExecStart=/usr/local/bin/gitea web --config /var/lib/gitea/custom/conf/app.ini
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+Start and Enable Gitea Service
+sudo systemctl daemon-reload
+sudo systemctl enable --now gitea
+sudo systemctl status gitea
+Access Gitea Web Interface
+•	Open: http://<your-server-ip>:3000
+•	Complete the setup via the web UI.
+
+sudo apt update && sudo apt upgrade -y
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash –
+
+sudo apt install -y nodejs
+
+
+
+
