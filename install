@@ -36,7 +36,7 @@ sudo apt install -y Jenkins
 Start & Enable the Jenkins Service
 Once Jenkins is installed, start the service and enable it to run on boot.
 sudo systemctl start jenkins
-sudo systemctl enable Jenkins
+sudo systemctl enable jenkins
 
 Open Firewall Ports (If UFW is Enabled)
 By default, Jenkins runs on port 8080. If you have a firewall enabled, allow traffic:
